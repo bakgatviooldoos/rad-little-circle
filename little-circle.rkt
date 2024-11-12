@@ -106,7 +106,6 @@
 (displayln
  (format "alpha:  ~a\nradius: ~a\nerror:  ~a" α r error))
 (plot diagram-tree
-      ;#:out-file "C:\\Users\\ChristiaanBrand\\OneDrive - Securicom\\backup\\racket\\nid\\little-circle.jpg"
       #:x-min -1.5 #:x-max 1.5
       #:y-min -1.5 #:y-max 1.5
       #:width  512 #:height 512)
