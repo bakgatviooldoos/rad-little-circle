@@ -1,7 +1,6 @@
 #lang racket
 
-(require plot
-         math/number-theory)
+(require plot)
 
 ; approximate the value of α according to a binary search
 (define (approximate-α repeat)
