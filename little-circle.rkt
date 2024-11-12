@@ -1,20 +1,19 @@
 #lang racket
 
-(require plot)
+(require plot simple-polynomial)
 
 ; approximate the value of α according to a binary search
 (define (approximate-α repeat)
-  (define (F x)
-    (+ (* 64 (expt x 6)) (* 64 (expt x 4)) (* 28 (expt x 2)) -3))
+  (define F (poly 64 0 64 0 28 0 -3)) ; 64x^{6} + 64x^{4} + 28x^{2} - 3
   
-  (let loop ([lo         0.0]
-             [hi         1.0]
-             [last-error 0]
+  (let loop ([lo         0.0] ; we know the little circle will have a radius greater than zero
+             [hi         1.0] ; but less than one, hence the `lo` and `hi`
+             [last-error 0.0]
              [steps-left repeat])
-    (define α     (/ (+ lo hi) 2)) ; binary search
+    (define α     (/ (+ lo hi) 2)) ; binary search, because it is easy
     (define Δ     (* α (- (sqrt (+ (* 16 α α) 1)) 1)))
     (define r     (- (* 4 α α) (/ Δ (* 4 α))))
-    (define error (F α)) ; we want the value at (F α) to be as close as possible to 0
+    (define error (F α)) ; we want the value at (F α) ≥ 0 to be as close as possible to 0
     
     (cond [(zero? steps-left)
            (displayln
@@ -24,7 +23,7 @@
            (displayln
             (format "~a guesses made before converging on value" (- repeat steps-left)))
            (values α Δ r error)]
-          [(equal? error last-error)
+          [(= error last-error)
            (displayln
             (format "~a guesses made before converging on error" (- repeat steps-left 1)))
            (values α Δ r error)]
@@ -88,9 +87,10 @@
          #:color 3 #:style 'dot)
         (point-label (vector (* 2 α) (* 4 α α)) "P" #:color 3)
         ; little circle/big circle norm
-        (function k
-                  -1 1
-                  #:color 1 #:style 'dot)
+        (function
+         k
+         -1 1
+         #:color 1 #:style 'dot)
         ; little circle
         (parametric
          (lambda (t)
